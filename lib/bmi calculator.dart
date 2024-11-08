@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,10 +13,13 @@ class MyHomePage extends StatefulWidget{
 class HomePage extends State<MyHomePage>{
 
   TextEditingController weightController = TextEditingController();
-  TextEditingController heightController = TextEditingController();
+  TextEditingController htfeetsController = TextEditingController();
+  TextEditingController htinchesController = TextEditingController();
 
-  String result = '';
-  String result1 = '';
+  String bmi = '';
+  Color bgColor = Colors.transparent;
+  String bmiCateg = '';
+
 
 
   @override
@@ -35,16 +40,24 @@ class HomePage extends State<MyHomePage>{
                 height: 250 ,
 
                 child:
-                Image(image: AssetImage('assets/image/bg_heart_img.png'),fit: BoxFit.fitHeight,),
+                Image(image: AssetImage('assets/image/bg_heart_img.png'),fit: BoxFit.fill,),
               ),
               Container(
-                height: 250,
+                height: 230,
                 width: double.infinity,
 
 
-                child: Center(
-                  child: Text( result,
-                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.red),),
+                child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text( bmi,
+                      style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: bgColor),),
+                    Text(bmiCateg,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: bgColor,
+                      fontWeight: FontWeight.w500
+                    ),)
+                  ],
                 ),
               )
             ],
@@ -53,28 +66,46 @@ class HomePage extends State<MyHomePage>{
           Image(image: AssetImage('assets/image/bmi_pic.png')),
 
 
-          Container(
-            width: double.infinity,
-            height: 50,
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text('Weight',style: TextStyle(fontSize: 20,color: Colors.grey),),
-                Text('Height',style: TextStyle(fontSize: 20,color: Colors.grey)),
-
-              ],
+          Container(margin: EdgeInsets.all(15),
+            width: 180,
+            child: TextField(controller: weightController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                  hintText: 'Enter Weight in kg',
+                  label: Text('Weight(in kg)'),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(21),
+                      borderSide: BorderSide(
+                        width: 2,
+                        color: Colors.green,
+                      )
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(11),
+                      borderSide: BorderSide(
+                      )
+                  )
+              ),),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Container(
+              height: 1,
+              width: double.infinity,
+              color: Colors.grey,
             ),
           ),
+
           Row(
             children: [
               Expanded(
                 child: Container(margin: EdgeInsets.all(15),
                   child: TextField(
-                    controller: weightController,
+                    controller: htfeetsController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        hintText: "Enter weight in kg",
-                        label: Text('Weight'),
+                        hintText: "height in feets",
+                        label: Text('Height(in feets)'),
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(21),
                             borderSide: BorderSide(
@@ -92,69 +123,82 @@ class HomePage extends State<MyHomePage>{
                 ),
               ),
               Container(
-                height: 50,
+                height: 90,
                 width: 1,
                 color: Colors.grey,
               ),
               Expanded(
                 child: Container(margin: EdgeInsets.all(15),
-                  child: TextField(controller: heightController,
+                  child: TextField(controller: htinchesController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                    hintText: 'Enter height in cm',
-                      label: Text('Height'),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(21),
-                          borderSide: BorderSide(
-                            width: 2,
-                            color: Colors.green,
-                          )
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                          )
-                      )
-                  ),),
+                        hintText: 'height in inches',
+                        label: Text('Height(in inches)'),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(21),
+                            borderSide: BorderSide(
+                              width: 2,
+                              color: Colors.green,
+                            )
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(11),
+                            borderSide: BorderSide(
+                            )
+                        )
+                    ),),
                 ),
               ),
 
             ],
           ),
 
-            ElevatedButton(onPressed: (){
-              int weight = int.parse(weightController.text);
-              int height = int.parse(heightController.text);
+          ElevatedButton(onPressed: (){
+            num weight = double.parse(weightController.text);
+            num htFeets = double.parse(htfeetsController.text);
+            num htInches = double.parse(htinchesController.text);
 
-              if( height>0){
-                int bmi = weight * 10000 ~/ (height * height);
+            num totalInches = (htFeets*12) + htInches;
 
+            num totalCm = totalInches * 2.54;
 
+            num totalM = totalCm/100;
 
-                if (bmi < 18.5) {
-                  result = '${bmi.toStringAsFixed(2)}';
+            num bmiValue = weight/(pow(totalM, 2.0));
 
-                } else if (bmi >= 18.5 && bmi < 24.9) {
-                  result = '${bmi.toStringAsFixed(2)}';
-                } else if (bmi >= 25 && bmi < 29.9) {
-                  result = '${bmi.toStringAsFixed(2)}';
-                } else {
-                  result = '${bmi.toStringAsFixed(2)}';
-                }
-                setState(() {
+            bmi = "BMI is: ${bmiValue.toStringAsFixed(2)}";
+            
+            /// Bmi and Color Logic
+            
+            if(bmiValue < 18.5){
+              bgColor = Color(0xff43bbb0);
+              bmiCateg = "Underweight";
+            }else if(bmiValue >= 18.5 && bmiValue <24.9){
+              bgColor = Color(0xff57b65b);
+              bmiCateg = "Normal";
+            }else if(bmiValue >= 24.9 && bmiValue < 29.9){
+              bgColor = Color(0xffeac11f);
+              bmiCateg = "Overweight";
+            }else if(bmiValue >= 29.9 && bmiValue < 34.9){
+              bgColor = Color(0xfffe9544);
+              bmiCateg = "Obese";
+            }else if(bmiValue > 34.9){
+              bgColor = Colors.red.shade900;
+              bmiCateg = "Extremely Obese";
+            };
+            
+            setState(() {
 
-                });
-
-
-              }
-
-            },
-              child: Text('Calculate BMI',style: TextStyle(fontSize: 30,fontWeight: FontWeight.w500,color: Colors.white),),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green
-              ),
-
-            ),
+            });
+          }, child: Text('Calculate BMI',
+            style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w500,
+                color: Colors.white),),
+            style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+              shadowColor: Colors.black,elevation: 5
+          ),),
           Container(
             width: double.infinity,
             height: 50,
