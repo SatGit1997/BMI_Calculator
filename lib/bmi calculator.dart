@@ -33,6 +33,9 @@ class HomePage extends State<MyHomePage>{
       SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+
+
+          Image(image: AssetImage('assets/image/bmi_pic.png')),
           Stack(
             children: [
               Container(margin: EdgeInsets.symmetric(vertical: 12),
@@ -40,7 +43,7 @@ class HomePage extends State<MyHomePage>{
                 height: 250 ,
 
                 child:
-                Image(image: AssetImage('assets/image/bg_heart_img.png'),fit: BoxFit.fill,),
+                Image(image: AssetImage('assets/image/white_heart.png'),fit: BoxFit.fill,),
               ),
               Container(
                 height: 230,
@@ -52,18 +55,16 @@ class HomePage extends State<MyHomePage>{
                     Text( bmi,
                       style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: bgColor),),
                     Text(bmiCateg,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: bgColor,
-                      fontWeight: FontWeight.w500
-                    ),)
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: bgColor,
+                          fontWeight: FontWeight.w500
+                      ),)
                   ],
                 ),
               )
             ],
           ),
-
-          Image(image: AssetImage('assets/image/bmi_pic.png')),
 
 
           Container(margin: EdgeInsets.all(15),
@@ -166,7 +167,7 @@ class HomePage extends State<MyHomePage>{
 
             num bmiValue = weight/(pow(totalM, 2.0));
 
-            bmi = "BMI is: ${bmiValue.toStringAsFixed(2)}";
+            bmi = "BMI is : ${bmiValue.toStringAsFixed(2)}";
             
             /// Bmi and Color Logic
             
